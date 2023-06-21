@@ -76,3 +76,11 @@ class Dinosaur:
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
     
+
+
+    """ self.highscore = 0  
+           if self.score > self.highscore:
+                self.highscore = self.score
+
+        highscore_text = f"Highscore: {self.highscore}"  # Adiciona o texto do highscore
+        self.text_renderer.render_text(highscore_text, (0, 0, 0), (1000, 80), self.screen) """
