@@ -1,16 +1,16 @@
 import pygame
 from pygame.sprite import Sprite
 
-from dino_runner.utils.constants import RUNNING, JUMPING, DUCKING, DEFAULT_TYPE, SHIELD_TYPE, DUCKING_SHIELD, JUMPING_SHIELD, RUNNING_SHIELD
+from dino_runner.utils.constants import *
 
 X_POS = 80
 Y_POS = 310
 Y_POS_DUCK = 340
 JUMP_VEL = 8.5
 
-DUCK_IMG = { DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD }
-JUMP_IMG = { DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD }
-RUN_IMG = { DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD }
+DUCK_IMG = {DEFAULT_TYPE: DUCKING, SHIELD_TYPE: DUCKING_SHIELD, HAMMER_TYPE: DUCKING_HAMMER, HEART_TYPE: DUCKING}
+JUMP_IMG = {DEFAULT_TYPE: JUMPING, SHIELD_TYPE: JUMPING_SHIELD, HAMMER_TYPE: JUMPING_HAMMER, HEART_TYPE: JUMPING}
+RUN_IMG = {DEFAULT_TYPE: RUNNING, SHIELD_TYPE: RUNNING_SHIELD, HAMMER_TYPE: RUNNING_HAMMER, HEART_TYPE: RUNNING}
 
 
 class Dinosaur:
@@ -43,6 +43,7 @@ class Dinosaur:
             self.duck()
 
         if user_input[pygame.K_UP] and not self.dino_jump:
+            JUMP_SOUND.play()
             self.dino_jump = True
             self.dino_run = False
             self.dino_duck = False
@@ -66,7 +67,7 @@ class Dinosaur:
         self.step_index += 1
     
     def jump(self):
-        self.image = JUMPING
+        self.image = JUMP_IMG[self.type]
         if self.dino_jump:
             self.dino_rect.y -= self.jump_vel * 4
             self.jump_vel -= 0.8
@@ -77,22 +78,14 @@ class Dinosaur:
             self.jump_vel = JUMP_VEL
 
     def duck(self):
-        self.image = DUCK_IMG[self.type][self.step_index // 5]
+        self.image = DUCK_IMG[self.type][self.duck_animation_index // 5]
         self.dino_rect = self.image.get_rect()
         self.dino_rect.x = X_POS
         self.dino_rect.y = Y_POS_DUCK
         self.duck_animation_index += 1
-        if self.duck_animation_index >= 10:
+        if self.duck_animation_index >= len(DUCK_IMG[self.type]) * 5:
             self.duck_animation_index = 0
 
     def draw(self, screen):
         screen.blit(self.image, (self.dino_rect.x, self.dino_rect.y))
     
-
-
-    """ self.highscore = 0  
-           if self.score > self.highscore:
-                self.highscore = self.score
-
-        highscore_text = f"Highscore: {self.highscore}"  # Adiciona o texto do highscore
-        self.text_renderer.render_text(highscore_text, (0, 0, 0), (1000, 80), self.screen) """

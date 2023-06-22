@@ -1,6 +1,6 @@
 import pygame
 
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DEFAULT_TYPE
+from dino_runner.utils.constants import *
 from dino_runner.components.dinosaur import Dinosaur
 from dino_runner.components.obstacles.obstacle_manager import ObstacleManager
 from dino_runner.components.text import Text
@@ -21,6 +21,7 @@ class Game:
         self.y_pos_bg = 380
         self.score = 0
         self.death_count = 0
+        self.highscore = 0
 
         self.player = Dinosaur()
         self.obstacle_manager = ObstacleManager()
@@ -62,6 +63,8 @@ class Game:
         self.score += 1
         if self.score % 100 == 0:
             self.game_speed += 3
+        if self.score > self.highscore:
+                self.highscore = self.score
     
     def reset_game(self):
         self.score = 0
@@ -83,10 +86,32 @@ class Game:
         image_width = BG.get_width()
         self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg))
         self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+
         if self.x_pos_bg <= -image_width:
             self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
             self.x_pos_bg = 0
+
         self.x_pos_bg -= self.game_speed
+
+        if self.score >= 400:
+            self.screen.fill((255, 153, 51))
+            
+        self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg))
+        self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+
+        if self.x_pos_bg <= -image_width:
+            self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+            self.x_pos_bg = 0
+
+        if self.score >= 700:
+            self.screen.fill((25, 25, 112))
+            
+        self.screen.blit(BG, (self.x_pos_bg, self.y_pos_bg))
+        self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+
+        if self.x_pos_bg <= -image_width:
+            self.screen.blit(BG, (image_width + self.x_pos_bg, self.y_pos_bg))
+            self.x_pos_bg = 0
 
     def draw_score(self):
         score_text = f"Score: {self.score}"
@@ -123,13 +148,18 @@ class Game:
         if self.death_count == 0:
             self.text_renderer.render_text("Press any key to start", (0, 0, 0), 
             (half_screen_width, half_screen_height), self.screen)
+            self.screen.blit(ICON, (half_screen_width - 50, 180))
         else:
             self.text_renderer.render_text("Press any key to restart", 
             (0, 0, 0), (half_screen_width, half_screen_height), self.screen)
             score_text = f"Score: {self.score}"
             self.text_renderer.render_text(score_text, (0, 0, 0), (1000, 50), self.screen)
             death_count_text = f"Death Count: {self.death_count}"
-            self.text_renderer.render_text(death_count_text, (0, 0, 0), (1000, 80), self.screen)
+            self.text_renderer.render_text(death_count_text, (0, 0, 0), (1000, 90), self.screen)
+            highscore_text = f"Highscore: {self.highscore}"
+            self.text_renderer.render_text(highscore_text, (0, 0, 0), (1000, 70), self.screen)
+            self.screen.blit(RESTART, (half_screen_width - 40, 180))
+            
         
         pygame.display.update()
 
